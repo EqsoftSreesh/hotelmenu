@@ -1,0 +1,1229 @@
+Build a modern, responsive Admin Panel for a Hotel / Restaurant Digital Menu Management System.
+
+IMPORTANT:
+This is NOT an online ordering admin panel.
+
+There is:
+- No order management
+- No cart
+- No payment
+- No checkout
+- No delivery management
+
+The admin panel is only for managing the digital menu, banners, availability, QR codes, staff, reviews and ratings.
+
+==================================================
+TECH STACK
+==================================================
+
+Frontend:
+- Next.js 15+
+- TypeScript
+- Tailwind CSS
+- shadcn/ui
+- React Hook Form
+- Zod
+- TanStack Query
+- Axios
+- Lucide React icons
+
+Use a clean professional dashboard design.
+
+The UI should be responsive for:
+- Desktop
+- Laptop
+- Tablet
+- Mobile
+
+Use reusable components.
+
+Do NOT hardcode menu data.
+
+All data must come from the FastAPI backend.
+
+==================================================
+DESIGN STYLE
+==================================================
+
+Create a premium hotel / restaurant management dashboard.
+
+Design inspiration:
+
+- Clean white / off-white background
+- Dark green primary color
+- Gold accent color
+- Rounded cards
+- Soft shadows
+- Modern typography
+- Clean spacing
+- Professional dashboard layout
+
+Primary visual style should match a premium restaurant brand.
+
+Use:
+- Dark green
+- Cream / white
+- Gold accents
+
+Avoid making the dashboard overly colorful.
+
+==================================================
+AUTHENTICATION
+==================================================
+
+Create admin login page.
+
+Route:
+
+/login
+
+Fields:
+
+- Email
+- Password
+
+Features:
+
+- Show/hide password
+- Login validation
+- Loading state
+- Error message
+- Remember authenticated session
+- Logout
+
+Use JWT authentication from the FastAPI backend.
+
+After successful login:
+
+/dashboard
+
+Protect all admin routes.
+
+Unauthenticated users must be redirected to:
+
+/login
+
+==================================================
+ADMIN LAYOUT
+==================================================
+
+Create a reusable dashboard layout.
+
+Desktop:
+
+------------------------------------------------
+Sidebar        Main Content
+------------------------------------------------
+Logo           Header
+Dashboard
+Menu
+Categories
+Banners
+Staff
+Reviews
+Locations / QR
+Settings
+Logout
+------------------------------------------------
+
+Mobile:
+
+Use a collapsible sidebar / drawer.
+
+Header should contain:
+
+- Page title
+- Admin profile
+- Notification icon
+- Mobile menu button
+
+==================================================
+SIDEBAR
+==================================================
+
+Sidebar menu:
+
+Dashboard
+Menu Items
+Categories
+Banners
+Staff
+Reviews
+Locations & QR
+Settings
+
+Bottom:
+
+Admin profile
+Logout
+
+Use Lucide icons.
+
+==================================================
+DASHBOARD
+==================================================
+
+Route:
+
+/dashboard
+
+Create a beautiful dashboard overview.
+
+Top statistics cards:
+
+1. Total Menu Items
+2. Available Items
+3. Out of Stock
+4. Categories
+5. Total Reviews
+6. Average Rating
+
+Example:
+
+Total Menu Items
+120
+
+Available
+105
+
+Out of Stock
+15
+
+Reviews
+540
+
+Average Rating
+4.6 ★
+
+==================================================
+DASHBOARD CHARTS
+==================================================
+
+Show:
+
+1. Review rating distribution
+
+5 ★ █████████
+4 ★ ██████
+3 ★ ██
+2 ★
+1 ★
+
+2. Popular menu items
+
+3. Top rated staff
+
+4. Recent reviews
+
+5. Recently updated menu items
+
+Use clean charts.
+
+Do not overload the dashboard.
+
+==================================================
+OUT OF STOCK ALERT
+==================================================
+
+Show a section:
+
+"Out of Stock Items"
+
+Example:
+
+----------------------------------
+Out of Stock
+----------------------------------
+
+Chicken Biriyani       OUT OF STOCK
+Beef Burger            OUT OF STOCK
+Fresh Lime             OUT OF STOCK
+
+Each item should have:
+
+[Make Available]
+
+When clicked:
+
+Call FastAPI availability API.
+
+The customer menu should update in real time.
+
+==================================================
+MENU ITEMS
+==================================================
+
+Route:
+
+/menu
+
+Show menu items in a table/grid.
+
+Columns:
+
+Image
+Name
+Category
+Price
+Rating
+Availability
+Status
+Actions
+
+Example:
+
+---------------------------------------------------------
+Image | Name | Category | Price | Rating | Status | Actions
+---------------------------------------------------------
+
+Creamy Alfredo Pasta
+Main Course
+₹14.99
+4.8 ★
+Available
+
+Actions:
+
+Edit
+Delete
+Change Availability
+
+==================================================
+MENU SEARCH
+==================================================
+
+Add:
+
+Search menu items...
+
+Filters:
+
+- Category
+- Available
+- Out of Stock
+- Featured
+- Popular
+- Bestseller
+
+Sorting:
+
+- Name
+- Price
+- Rating
+- Display Order
+
+Pagination:
+
+10 / 20 / 50 items per page.
+
+==================================================
+ADD MENU ITEM
+==================================================
+
+Button:
+
++ Add Menu Item
+
+Open page or modal.
+
+Fields:
+
+- Item Name
+- Category
+- Short Description
+- Description
+- Price
+- Image
+- Tags
+- Display Order
+
+Options:
+
+[ ] Featured
+[ ] Popular
+[ ] Bestseller
+[ ] Available
+
+Image upload should show preview.
+
+Validation:
+
+- Name required
+- Category required
+- Price required
+- Price cannot be negative
+- Image must be valid
+
+Submit:
+
+Create Menu Item
+
+Connect this form to FastAPI.
+
+==================================================
+EDIT MENU ITEM
+==================================================
+
+Allow admin to edit:
+
+- Name
+- Category
+- Description
+- Price
+- Image
+- Tags
+- Display order
+- Featured
+- Popular
+- Bestseller
+- Availability
+
+Show existing image.
+
+Allow replacing image.
+
+==================================================
+QUICK AVAILABILITY
+==================================================
+
+This is one of the most important features.
+
+In the menu table, add a toggle:
+
+AVAILABLE / OUT OF STOCK
+
+Example:
+
+Available     [ ON ]
+
+When switched OFF:
+
+Call:
+
+PATCH /api/v1/admin/menu-items/{id}/availability
+
+Body:
+
+{
+    "is_available": false
+}
+
+Show toast:
+
+"Chicken Biriyani marked as out of stock"
+
+The backend will send a WebSocket event.
+
+The customer menu must immediately reflect the change.
+
+==================================================
+CATEGORIES
+==================================================
+
+Route:
+
+/categories
+
+Show categories as cards/table.
+
+Example:
+
+All Menu
+Starters
+Main Course
+Beverages
+Desserts
+Offers
+
+Each category should show:
+
+- Icon/image
+- Name
+- Number of items
+- Active status
+- Display order
+
+Actions:
+
+Edit
+Delete
+Activate/Deactivate
+Reorder
+
+Button:
+
++ Add Category
+
+Form:
+
+- Name
+- Description
+- Icon
+- Image
+- Display order
+- Active
+
+==================================================
+BANNERS
+==================================================
+
+Route:
+
+/banners
+
+This section manages the banners shown on the customer menu.
+
+Display banners as visual cards.
+
+Example:
+
+---------------------------------------------
+|             BANNER IMAGE                  |
+|                                           |
+| Good Food. Good Mood.                     |
+| Fresh ingredients...                      |
+|                                           |
+| Active                                     |
+---------------------------------------------
+
+Admin can:
+
+- Upload banner
+- Edit banner
+- Delete banner
+- Activate/deactivate
+- Reorder banners
+
+Fields:
+
+- Title
+- Subtitle
+- Description
+- Banner Image
+- Button Text
+- Button Link
+- Display Order
+- Active
+- Start Date
+- End Date
+
+Show image preview before upload.
+
+==================================================
+BANNER UPLOAD
+==================================================
+
+Allow:
+
+JPG
+JPEG
+PNG
+WEBP
+
+Show upload area:
+
+Drag & Drop banner image
+
+or
+
+Choose Image
+
+Show:
+
+- Image preview
+- File size
+- Remove image
+
+Upload image through FastAPI.
+
+Do not store base64 images inside the database.
+
+==================================================
+STAFF MANAGEMENT
+==================================================
+
+Route:
+
+/staff
+
+This manages serving persons / waiters.
+
+Display:
+
+Profile Image
+Name
+Employee Code
+Designation
+Average Rating
+Total Ratings
+Status
+Actions
+
+Example:
+
+John
+EMP001
+Waiter
+4.8 ★
+124 ratings
+
+Actions:
+
+View Ratings
+Edit
+Deactivate
+Delete
+
+==================================================
+ADD STAFF
+==================================================
+
+Fields:
+
+- Name
+- Employee Code
+- Profile Image
+- Designation
+- Active
+
+Example:
+
+Name:
+John
+
+Employee Code:
+EMP001
+
+Designation:
+Waiter
+
+Profile image upload.
+
+==================================================
+STAFF RATING
+==================================================
+
+Create staff rating detail page:
+
+/staff/[id]
+
+Show:
+
+Staff profile
+
+John
+Waiter
+
+4.8 ★
+
+124 Ratings
+
+Rating distribution:
+
+5 ★ ███████████
+4 ★ ███
+3 ★
+2 ★
+1 ★
+
+Recent customer reviews.
+
+==================================================
+REVIEWS
+==================================================
+
+Route:
+
+/reviews
+
+Create a review management dashboard.
+
+Tabs:
+
+All
+Menu Reviews
+Staff Reviews
+Restaurant Reviews
+Pending
+Approved
+Hidden
+
+Review card:
+
+-----------------------------------
+★★★★★ 5.0
+
+"Excellent food and service."
+
+Customer: John
+Menu: Grilled Ribeye Steak
+Staff: David
+Location: Table 05
+
+Date: 06 Oct 2026
+
+[Approve] [Hide] [Delete]
+-----------------------------------
+
+Admin can:
+
+- Approve
+- Hide
+- Delete
+
+==================================================
+REVIEW DETAILS
+==================================================
+
+Clicking a review opens:
+
+Review details
+
+Customer
+Rating
+Review text
+Menu item
+Staff
+Location
+Date
+Images
+
+If customer uploaded review images, display them.
+
+==================================================
+LOCATIONS / TABLES
+==================================================
+
+Route:
+
+/locations
+
+Manage hotel/restaurant locations.
+
+Examples:
+
+Table 01
+Table 02
+Table 03
+Room 101
+Room 102
+
+Fields:
+
+- Location name
+- Type
+- Table number
+- Room number
+- Active
+
+==================================================
+QR CODE MANAGEMENT
+==================================================
+
+Each location should have a QR code.
+
+Example:
+
+Table 01
+
+[QR CODE]
+
+URL:
+
+https://menu.example.com/menu/secure-token
+
+Buttons:
+
+Download QR
+Regenerate QR
+View Menu
+Deactivate
+
+Create:
+
++ Add Location
+
+Then:
+
+Generate QR
+
+QR should point to the Next.js customer menu.
+
+Example:
+
+/menu/{qr_token}
+
+==================================================
+QR CODE PAGE
+==================================================
+
+Create a QR preview page.
+
+Show:
+
+Restaurant logo
+
+Table 01
+
+Large QR code
+
+"Scan to View Menu"
+
+Buttons:
+
+Download PNG
+Print QR
+
+The QR code must be generated using the backend API.
+
+==================================================
+LIVE UPDATES
+==================================================
+
+Connect the admin panel to the FastAPI WebSocket.
+
+When an admin changes:
+
+- Menu availability
+- Menu item
+- Category
+- Banner
+
+the backend sends a WebSocket event.
+
+The admin UI should update automatically.
+
+Example event:
+
+{
+    "event": "MENU_ITEM_AVAILABILITY_CHANGED",
+    "data": {
+        "menu_item_id": 12,
+        "is_available": false
+    }
+}
+
+Use this to update the TanStack Query cache.
+
+==================================================
+API INTEGRATION
+==================================================
+
+Create a centralized Axios client.
+
+Example:
+
+/lib/api.ts
+
+Configure:
+
+baseURL = NEXT_PUBLIC_API_URL
+
+Authentication:
+
+Authorization: Bearer <token>
+
+Create API service modules:
+
+/services/auth.ts
+/services/menu.ts
+/services/categories.ts
+/services/banners.ts
+/services/staff.ts
+/services/reviews.ts
+/services/locations.ts
+/services/qr.ts
+/services/dashboard.ts
+
+Do not put API calls directly inside UI components.
+
+==================================================
+STATE MANAGEMENT
+==================================================
+
+Use TanStack Query for server state.
+
+Use React state/context only for local UI state.
+
+Handle:
+
+- Loading
+- Error
+- Empty
+- Success
+- Refetching
+
+Use query invalidation after mutations.
+
+==================================================
+TOAST NOTIFICATIONS
+==================================================
+
+Use toast notifications.
+
+Examples:
+
+"Menu item created successfully"
+
+"Menu item updated successfully"
+
+"Menu item deleted successfully"
+
+"Banner uploaded successfully"
+
+"Staff member added successfully"
+
+"Item marked as out of stock"
+
+"Item is now available"
+
+==================================================
+DELETE CONFIRMATION
+==================================================
+
+Never delete immediately.
+
+Show confirmation dialog:
+
+Delete Menu Item?
+
+Are you sure you want to delete
+"Grilled Ribeye Steak"?
+
+[Cancel] [Delete]
+
+Use the same pattern for:
+
+- Categories
+- Menu items
+- Banners
+- Staff
+- Locations
+- Reviews
+
+==================================================
+LOADING STATES
+==================================================
+
+Use skeleton loaders.
+
+Do not show blank screens while loading.
+
+Examples:
+
+Menu table skeleton
+Dashboard card skeleton
+Review skeleton
+Banner skeleton
+
+==================================================
+EMPTY STATES
+==================================================
+
+Create useful empty states.
+
+Example:
+
+"No menu items found"
+
+[+ Add Menu Item]
+
+"No reviews yet"
+
+"No banners available"
+
+"No staff members found"
+
+==================================================
+RESPONSIVE DESIGN
+==================================================
+
+Desktop:
+
+Sidebar + dashboard
+
+Tablet:
+
+Collapsible sidebar
+
+Mobile:
+
+Drawer navigation
+
+Tables should become responsive cards on mobile where appropriate.
+
+Forms should work properly on mobile.
+
+==================================================
+ACCESSIBILITY
+==================================================
+
+Use:
+
+- Semantic HTML
+- Proper labels
+- Keyboard navigation
+- Accessible dialogs
+- Accessible buttons
+- Good contrast
+- Focus states
+
+==================================================
+ERROR HANDLING
+==================================================
+
+Handle FastAPI errors properly.
+
+Example:
+
+401:
+
+Redirect to /login
+
+403:
+
+Show:
+
+"You don't have permission to perform this action."
+
+404:
+
+Show appropriate not-found UI.
+
+500:
+
+Show:
+
+"Something went wrong. Please try again."
+
+==================================================
+ENVIRONMENT
+==================================================
+
+Create:
+
+.env.local
+
+Example:
+
+NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
+NEXT_PUBLIC_WS_URL=ws://localhost:8000/api/v1/ws
+
+Never hardcode API URLs.
+
+==================================================
+ROUTES
+==================================================
+
+Create these routes:
+
+/login
+
+/dashboard
+
+/menu
+
+/menu/new
+
+/menu/[id]/edit
+
+/categories
+
+/banners
+
+/staff
+
+/staff/[id]
+
+/reviews
+
+/locations
+
+/locations/[id]
+
+/settings
+
+==================================================
+COMPONENT STRUCTURE
+==================================================
+
+Create reusable components:
+
+components/
+    layout/
+        Sidebar
+        Header
+        MobileSidebar
+
+    dashboard/
+        StatCard
+        ReviewChart
+        PopularItems
+        TopStaff
+        RecentReviews
+
+    menu/
+        MenuTable
+        MenuCard
+        MenuForm
+        AvailabilityToggle
+        MenuFilters
+
+    categories/
+        CategoryTable
+        CategoryForm
+
+    banners/
+        BannerCard
+        BannerForm
+        BannerUpload
+
+    staff/
+        StaffTable
+        StaffForm
+        StaffRating
+
+    reviews/
+        ReviewCard
+        ReviewFilters
+        ReviewDetails
+
+    qr/
+        QRPreview
+        QRDownload
+
+    common/
+        Loading
+        EmptyState
+        ConfirmDialog
+        ImageUpload
+        Pagination
+
+==================================================
+IMPORTANT UI REQUIREMENT
+==================================================
+
+The admin panel must NOT contain hardcoded data.
+
+Everything must come from the FastAPI backend.
+
+For example:
+
+Wrong:
+
+const menuItems = [
+    {
+        name: "Pasta",
+        price: 14.99
+    }
+]
+
+Correct:
+
+const { data } = useQuery({
+    queryKey: ["menu-items"],
+    queryFn: getMenuItems
+})
+
+==================================================
+CUSTOMER MENU PREVIEW
+==================================================
+
+Add a useful admin feature:
+
+"View Customer Menu"
+
+For each location:
+
+[View Menu]
+
+This opens:
+
+/menu/{qr_token}
+
+in a new tab.
+
+This allows the admin to see exactly what customers see.
+
+==================================================
+SETTINGS
+==================================================
+
+Create a basic settings page.
+
+Settings:
+
+Restaurant Name
+Logo
+Address
+Phone
+Email
+Currency
+Opening Hours
+
+Allow admin to update these through the backend.
+
+==================================================
+SECURITY
+==================================================
+
+Protect all admin routes.
+
+Never expose:
+
+- Passwords
+- Password hashes
+- JWT secrets
+- Internal database information
+
+Do not trust client-side authorization alone.
+
+Backend must enforce permissions.
+
+==================================================
+FINAL REQUIREMENT
+==================================================
+
+Build this as a professional production-ready admin dashboard for the FastAPI backend.
+
+The main goal is:
+
+Admin opens dashboard
+        ↓
+Manages categories
+        ↓
+Manages menu items
+        ↓
+Uploads images
+        ↓
+Manages banners
+        ↓
+Controls availability
+        ↓
+Manages serving staff
+        ↓
+Views customer reviews
+        ↓
+Views staff ratings
+        ↓
+Creates hotel/table QR codes
+        ↓
+Customer scans QR
+        ↓
+Customer sees the live menu
+
+There must be NO ordering functionality.
+
+Do not create cart pages.
+
+Do not create checkout pages.
+
+Do not create payment pages.
+
+Do not create order management.
+
+Focus entirely on digital menu management and customer feedback.
+
+Use the FastAPI backend API described in the backend specification.
+
+Build the project with clean architecture, reusable components, responsive UI, proper loading states, error handling and real-time updates.

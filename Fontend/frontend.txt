@@ -1,0 +1,1288 @@
+Build a premium, modern, mobile-first Hotel / Restaurant Digital Menu website using Next.js.
+
+IMPORTANT:
+This is a DIGITAL MENU DISPLAY website.
+
+Customers scan a QR code at a hotel table / restaurant / room and open this website.
+
+The customer can:
+- View the menu
+- Search menu items
+- Browse categories
+- View food details
+- See prices
+- See availability
+- See ratings and reviews
+- Submit food reviews
+- Rate the serving person
+- Rate the restaurant/service
+
+The customer CANNOT:
+- Place an order
+- Add items to cart
+- Checkout
+- Make payment
+- Track an order
+
+DO NOT CREATE:
+- Cart
+- Checkout
+- Payment
+- Order management
+- Delivery tracking
+
+The website should feel like the restaurant menu UI shown in the provided reference image.
+
+==================================================
+TECH STACK
+==================================================
+
+Use:
+
+- Next.js 15+
+- TypeScript
+- Tailwind CSS
+- shadcn/ui
+- Lucide React
+- TanStack Query
+- Axios
+- React Hook Form
+- Zod
+
+Use the FastAPI backend API.
+
+Do NOT hardcode menu data.
+
+All menu data, categories, banners, reviews, staff and availability must come from the backend API.
+
+==================================================
+DESIGN DIRECTION
+==================================================
+
+Create a premium hotel / restaurant food menu experience.
+
+The UI should closely follow the visual style of the provided reference:
+
+- Elegant
+- Premium
+- Minimal
+- Modern
+- Food-focused
+- Mobile-first
+- High-quality food imagery
+- Rounded cards
+- Soft shadows
+- Cream/off-white background
+- Dark green primary color
+- Gold accent color
+- Elegant serif typography for restaurant branding/headings
+- Clean modern sans-serif typography for normal content
+
+Primary colors:
+
+Dark Green:
+#063B2A
+
+Gold:
+#C6A24A
+
+Background:
+#F8F7F3
+
+White:
+#FFFFFF
+
+Text:
+#17201B
+
+Do not use excessive gradients.
+
+==================================================
+QR CODE ENTRY
+==================================================
+
+Customers enter the website through a QR code.
+
+Example URL:
+
+/menu/{qr_token}
+
+Example:
+
+/menu/table-a8f93kdh2
+
+When the page opens:
+
+1. Read the QR token from the URL.
+2. Request menu data from FastAPI.
+3. Load the restaurant information.
+4. Load active banners.
+5. Load categories.
+6. Load menu items.
+7. Load availability.
+8. Load ratings.
+
+Do not require customer login.
+
+==================================================
+MAIN MOBILE UI
+==================================================
+
+The primary customer experience should be optimized for mobile.
+
+The page should look similar to the provided reference image.
+
+Structure:
+
+------------------------------------------------
+
+TOP HEADER
+
+[☰]       RESTAURANT LOGO       [User]
+
+Restaurant name
+
+------------------------------------------------
+
+SEARCH BAR
+
+🔍 Search for dishes, cuisines...
+
+[Filter]
+
+------------------------------------------------
+
+HERO BANNER
+
+Large premium food image
+
+Small subtitle
+
+GOOD FOOD.
+GOOD MOOD.
+GREAT MEMORIES.
+
+Description
+
+[Explore Menu →]
+
+Banner dots
+
+------------------------------------------------
+
+CATEGORY NAVIGATION
+
+Horizontal scrolling categories:
+
+All Menu
+Starters
+Main Course
+Beverages
+Desserts
+Offers
+
+Each category should have:
+
+Circular icon/image
+Category name
+
+Selected category:
+
+Dark green circular background
+Gold/white icon
+
+------------------------------------------------
+
+POPULAR DISHES
+
+Popular Dishes                         View All →
+
+Horizontal food cards
+
+------------------------------------------------
+
+MENU ITEMS
+
+Food cards
+
+------------------------------------------------
+
+SPECIAL BANNER
+
+Promotional banner
+
+------------------------------------------------
+
+RESTAURANT INFORMATION
+
+Address
+Opening hours
+Phone
+
+------------------------------------------------
+
+CUSTOMER REVIEWS
+
+★★★★★
+
+Customer reviews
+
+------------------------------------------------
+
+RATE YOUR EXPERIENCE
+
+Food
+Service
+Serving Person
+
+------------------------------------------------
+
+BOTTOM NAVIGATION
+
+Home
+Menu
+Reviews
+More
+
+------------------------------------------------
+
+IMPORTANT:
+
+There should NOT be an "Order Online" button.
+
+Do not show cart icons.
+
+Do not show checkout functionality.
+
+==================================================
+HEADER
+==================================================
+
+Create a premium header.
+
+Left:
+
+Hamburger menu icon.
+
+Center:
+
+Restaurant logo
+
+Restaurant name
+
+Example:
+
+TASTE HAVEN
+RESTAURANT
+
+Right:
+
+Information icon or profile/info button.
+
+Do NOT show a shopping cart.
+
+Make the header sticky when scrolling.
+
+==================================================
+RESTAURANT BRANDING
+==================================================
+
+The restaurant name and logo must come from the backend.
+
+Example:
+
+TASTE HAVEN
+
+RESTAURANT
+
+The admin should be able to change:
+
+- Restaurant name
+- Logo
+- Tagline
+
+The frontend should automatically display the updated information.
+
+==================================================
+SEARCH
+==================================================
+
+Create a large rounded search bar.
+
+Placeholder:
+
+Search for dishes, cuisines...
+
+Features:
+
+- Search by item name
+- Search by description
+- Search by tags
+- Search by category
+
+Search should update results smoothly.
+
+Show:
+
+"No dishes found"
+
+when no results exist.
+
+Add a filter button beside the search bar.
+
+==================================================
+FILTER
+==================================================
+
+Filter modal / bottom sheet.
+
+Options:
+
+Category
+Price range
+Rating
+Available only
+Popular
+Bestseller
+Featured
+
+Buttons:
+
+Clear
+Apply
+
+==================================================
+HERO BANNER
+==================================================
+
+Create a large rounded promotional banner.
+
+Use high-quality food images.
+
+Banner content comes from FastAPI.
+
+Example:
+
+GOOD FOOD.
+GOOD MOOD.
+GREAT MEMORIES.
+
+Fresh ingredients, unique flavors
+and unforgettable experiences.
+
+Button:
+
+EXPLORE MENU →
+
+The admin can upload/change the banner from the admin panel.
+
+Frontend must automatically display the updated banner.
+
+Support multiple banners.
+
+Create a carousel.
+
+Add:
+
+- Previous/next
+- Swipe on mobile
+- Pagination dots
+- Auto slide
+
+==================================================
+CATEGORY SECTION
+==================================================
+
+Create horizontally scrollable category navigation.
+
+Example:
+
+All Menu
+Starters
+Main Course
+Beverages
+Desserts
+Offers
+
+Each category should have an icon/image.
+
+Clicking a category should:
+
+- Scroll to menu section
+OR
+- Filter the menu items
+
+Use smooth scrolling.
+
+Active category should be clearly highlighted.
+
+==================================================
+POPULAR DISHES
+==================================================
+
+Section:
+
+Popular Dishes
+
+Right side:
+
+View All →
+
+Create horizontally scrollable cards on mobile.
+
+Each card contains:
+
+Food image
+
+Badge:
+
+BESTSELLER
+CHEF'S PICK
+POPULAR
+
+Food name
+
+Short description
+
+Rating
+
+Price
+
+Example:
+
+Creamy Alfredo Pasta
+
+Fettuccine pasta in creamy
+alfredo sauce.
+
+★★★★★ 4.8 (1.2K)
+
+₹14.99
+
+IMPORTANT:
+
+There is NO plus button.
+
+Do not show:
+
++
+Add
+Add to cart
+
+because this is only a menu display.
+
+==================================================
+MENU ITEM CARD
+==================================================
+
+Create beautiful food cards.
+
+Card:
+
+--------------------------------
+|                              |
+|        FOOD IMAGE            |
+|                              |
+| BESTSELLER                   |
+--------------------------------
+
+Creamy Alfredo Pasta
+
+Fettuccine pasta in creamy
+alfredo sauce.
+
+★★★★★ 4.8
+
+₹299
+
+AVAILABLE
+
+When unavailable:
+
+--------------------------------
+|        FOOD IMAGE            |
+|                              |
+|       OUT OF STOCK           |
+--------------------------------
+
+Show the item as visually unavailable.
+
+Do not remove the item from the menu.
+
+==================================================
+MENU ITEM DETAILS
+==================================================
+
+Clicking a food item opens a detail page/modal.
+
+Example:
+
+/menu/{qr_token}/item/{item_id}
+
+Display:
+
+Large food image
+
+Item name
+
+Rating
+
+Review count
+
+Price
+
+Availability
+
+Description
+
+Ingredients
+
+Tags
+
+Customer reviews
+
+Example:
+
+GRILLED RIBEYE STEAK
+
+★★★★★ 4.8 (856 reviews)
+
+₹1,299
+
+AVAILABLE
+
+Tender ribeye grilled with garlic
+herb butter.
+
+Tags:
+
+Beef
+Chef's Special
+High Protein
+
+Reviews:
+
+★★★★★
+"Excellent steak and great presentation."
+
+There should be NO order button.
+
+==================================================
+OUT OF STOCK
+==================================================
+
+If the backend says:
+
+is_available = false
+
+Display:
+
+OUT OF STOCK
+
+Use a subtle overlay over the image.
+
+The card should remain visible.
+
+Do not allow any ordering action because this is a view-only menu.
+
+==================================================
+REAL-TIME AVAILABILITY
+==================================================
+
+Connect the frontend to the FastAPI WebSocket.
+
+WebSocket:
+
+/api/v1/ws/menu/{qr_token}
+
+When backend sends:
+
+{
+    "event": "MENU_ITEM_AVAILABILITY_CHANGED",
+    "data": {
+        "menu_item_id": 12,
+        "is_available": false
+    }
+}
+
+Immediately update the corresponding food card.
+
+Example:
+
+AVAILABLE
+
+changes automatically to:
+
+OUT OF STOCK
+
+without refreshing the page.
+
+Also handle:
+
+MENU_ITEM_CREATED
+MENU_ITEM_UPDATED
+MENU_ITEM_DELETED
+CATEGORY_UPDATED
+BANNER_UPDATED
+
+Use TanStack Query cache updates where appropriate.
+
+==================================================
+REVIEWS
+==================================================
+
+Create a customer review section.
+
+Title:
+
+What Our Guests Say
+
+Display review cards.
+
+Example:
+
+★★★★★
+
+"Beautiful food and excellent service.
+Everything was fresh and delicious."
+
+— Rahul
+
+Show:
+
+Rating
+Customer name
+Review
+Date
+Food item if applicable
+
+==================================================
+REVIEW PAGE
+==================================================
+
+Create:
+
+/menu/{qr_token}/reviews
+
+Display:
+
+Average rating
+
+4.7 ★
+
+Based on 532 reviews
+
+Rating distribution:
+
+5 ★ █████████
+4 ★ █████
+3 ★ ██
+2 ★
+1 ★
+
+Then show customer reviews.
+
+Allow filtering:
+
+All
+Food
+Service
+Restaurant
+
+==================================================
+WRITE A REVIEW
+==================================================
+
+Create a button:
+
+Rate Your Experience
+
+Open a beautiful bottom sheet/modal.
+
+Step 1:
+
+How was your experience?
+
+★★★★★
+
+Select 1-5 stars.
+
+Step 2:
+
+What would you like to rate?
+
+Food
+Serving Person
+Restaurant
+
+Allow multiple selections.
+
+==================================================
+FOOD REVIEW
+==================================================
+
+Customer can select a menu item.
+
+Example:
+
+What did you try?
+
+[ Select Dish ]
+
+Then:
+
+Rate this dish
+
+★★★★★
+
+Write your review:
+
+[________________________]
+
+Optional:
+
+Upload photos
+
+Maximum 3 photos.
+
+Button:
+
+Submit Review
+
+==================================================
+SERVING PERSON RATING
+==================================================
+
+Create a dedicated serving-person rating flow.
+
+Title:
+
+Rate Your Server
+
+Show staff members provided by backend.
+
+Example:
+
+--------------------------------
+[Profile Image]
+
+David
+Restaurant Server
+
+★★★★★
+4.8
+--------------------------------
+
+Customer selects staff member.
+
+Then:
+
+How was the service?
+
+★★★★★
+
+Optional review:
+
+[________________________]
+
+Submit Rating
+
+This rating must be sent to the FastAPI backend.
+
+==================================================
+RESTAURANT RATING
+==================================================
+
+Allow customers to rate overall restaurant experience.
+
+Example:
+
+How was your overall experience?
+
+★★★★★
+
+Food Quality
+★★★★★
+
+Service
+★★★★★
+
+Ambience
+★★★★★
+
+Overall Experience
+★★★★★
+
+Optional comment.
+
+Submit Review.
+
+==================================================
+REVIEW SUCCESS
+==================================================
+
+After submitting:
+
+Show a premium success animation.
+
+Example:
+
+✓
+
+Thank you!
+
+Your review has been submitted.
+
+Your feedback helps us improve
+your experience.
+
+Button:
+
+Back to Menu
+
+==================================================
+RESTAURANT INFO
+==================================================
+
+Create a restaurant information section.
+
+Show:
+
+Restaurant logo
+
+Restaurant name
+
+Address
+
+Phone
+
+Opening hours
+
+Example:
+
+TASTE HAVEN
+
+123 MG Road
+Kochi, Kerala
+
+Open today
+11:00 AM – 11:00 PM
+
+Do not hardcode this data.
+
+Load it from backend.
+
+==================================================
+ABOUT / MORE
+==================================================
+
+Create a More menu.
+
+Options:
+
+About Restaurant
+Opening Hours
+Contact
+Location
+Reviews
+Rate Your Experience
+
+Do not include ordering-related options.
+
+==================================================
+BOTTOM NAVIGATION
+==================================================
+
+Mobile bottom navigation:
+
+Home
+Menu
+Reviews
+More
+
+Selected icon:
+
+Dark green
+
+Do NOT include:
+
+Cart
+Orders
+Checkout
+
+The bottom navigation should remain fixed.
+
+==================================================
+DESKTOP RESPONSIVE VERSION
+==================================================
+
+Although mobile is the primary experience, create a beautiful desktop layout.
+
+Desktop:
+
+Centered restaurant content.
+
+Maximum width:
+
+1200–1400px.
+
+Hero banner becomes wider.
+
+Menu items display in a grid.
+
+Example:
+
+3 or 4 cards per row.
+
+Categories remain horizontally accessible.
+
+Do not stretch food cards excessively.
+
+==================================================
+ANIMATIONS
+==================================================
+
+Use subtle animations.
+
+Examples:
+
+- Card hover
+- Image zoom
+- Fade-in
+- Smooth category scrolling
+- Banner transitions
+- Modal transitions
+- Review success animation
+
+Do not overuse animations.
+
+The website should feel premium and fast.
+
+==================================================
+IMAGE HANDLING
+==================================================
+
+Food images come from backend.
+
+Use:
+
+Next.js Image
+
+Optimize images.
+
+Use proper aspect ratios.
+
+Food card image:
+
+4:3
+
+Hero:
+
+16:9 approximately
+
+Item detail:
+
+4:3 / 1:1 depending on screen.
+
+Show skeleton while images load.
+
+==================================================
+LOADING STATES
+==================================================
+
+Create skeleton loaders for:
+
+- Header
+- Hero
+- Categories
+- Popular dishes
+- Menu cards
+- Reviews
+
+Do not show empty white screens.
+
+==================================================
+ERROR STATES
+==================================================
+
+If API fails:
+
+Show:
+
+"Unable to load the menu."
+
+Button:
+
+Try Again
+
+If QR token is invalid:
+
+Show:
+
+Menu Not Found
+
+"The QR code you scanned is invalid or inactive."
+
+==================================================
+QR LOCATION
+==================================================
+
+The frontend should know which location the customer scanned.
+
+Example:
+
+Table 05
+
+Display optionally:
+
+"You're viewing the menu for Table 05"
+
+Do not ask customers to manually enter table numbers.
+
+The QR token handles this.
+
+==================================================
+API INTEGRATION
+==================================================
+
+Create centralized Axios client.
+
+Example:
+
+/lib/api.ts
+
+Environment:
+
+NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
+
+Services:
+
+/services/menu.ts
+/services/categories.ts
+/services/banners.ts
+/services/reviews.ts
+/services/staff.ts
+/services/restaurant.ts
+
+Use TanStack Query.
+
+Do not make API calls directly everywhere inside components.
+
+==================================================
+DATA FLOW
+==================================================
+
+When customer opens:
+
+/menu/{qr_token}
+
+Do:
+
+GET /api/v1/menu/{qr_token}
+
+Load:
+
+Restaurant
+Location
+Banners
+Categories
+Menu items
+Popular items
+Reviews
+Ratings
+
+Then render the complete menu.
+
+==================================================
+NO HARDCODED DATA
+==================================================
+
+This is extremely important.
+
+Do NOT create:
+
+const foods = [...]
+
+Do NOT create:
+
+const categories = [...]
+
+Do NOT create hardcoded banners.
+
+Everything must come from FastAPI.
+
+The admin panel will control the content.
+
+If admin adds:
+
+"Chicken Biriyani"
+
+it must automatically appear on the customer website.
+
+If admin changes:
+
+₹250 → ₹280
+
+the customer website must show ₹280.
+
+If admin uploads a new banner:
+
+the customer website must show it.
+
+If admin marks:
+
+Chicken Biriyani → OUT OF STOCK
+
+the customer website must immediately show:
+
+OUT OF STOCK.
+
+==================================================
+SEO / METADATA
+==================================================
+
+Create dynamic metadata.
+
+Restaurant name should be used as:
+
+<title>
+
+Example:
+
+Taste Haven | Digital Menu
+
+Use restaurant branding.
+
+==================================================
+PERFORMANCE
+==================================================
+
+Optimize for mobile.
+
+Target:
+
+Fast initial load
+Minimal JavaScript
+Optimized images
+Lazy loading
+Efficient API requests
+
+Avoid unnecessary re-renders.
+
+==================================================
+ACCESSIBILITY
+==================================================
+
+Use:
+
+- Semantic HTML
+- Accessible buttons
+- Proper labels
+- Keyboard navigation
+- Good color contrast
+- Screen-reader friendly content
+
+==================================================
+FOLDER STRUCTURE
+==================================================
+
+Use a clean structure:
+
+app/
+    menu/
+        [qr_token]/
+            page.tsx
+            reviews/
+                page.tsx
+            item/
+                [id]/
+                    page.tsx
+
+components/
+    header/
+    hero/
+    categories/
+    menu/
+    reviews/
+    staff/
+    restaurant/
+    navigation/
+    common/
+
+lib/
+    api.ts
+    websocket.ts
+
+services/
+    menu.ts
+    category.ts
+    banner.ts
+    review.ts
+    staff.ts
+    restaurant.ts
+
+hooks/
+    useMenu.ts
+    useReviews.ts
+    useWebSocket.ts
+
+types/
+    menu.ts
+    category.ts
+    review.ts
+    staff.ts
+    restaurant.ts
+
+==================================================
+FINAL USER EXPERIENCE
+==================================================
+
+The complete customer flow should be:
+
+Customer enters hotel
+        ↓
+Sees QR code
+        ↓
+Scans QR
+        ↓
+Next.js menu opens
+        ↓
+Restaurant branding loads
+        ↓
+Hero banner
+        ↓
+Search
+        ↓
+Categories
+        ↓
+Popular dishes
+        ↓
+Complete menu
+        ↓
+Customer opens food item
+        ↓
+Reads description, price and reviews
+        ↓
+Sees live availability
+        ↓
+Browses other dishes
+        ↓
+Reads customer reviews
+        ↓
+Rates food / restaurant / serving person
+        ↓
+Returns to menu
+
+NO ORDERING.
+
+NO CART.
+
+NO PAYMENT.
+
+NO CHECKOUT.
+
+NO ORDER TRACKING.
+
+This is a premium digital menu and customer feedback platform.
+
+Build the UI to closely match the provided reference image while making it a real functional Next.js application connected to the FastAPI backend.

@@ -1,0 +1,1604 @@
+
+---
+
+# Backend Development Prompt — FastAPI Hotel Menu System
+
+```text
+You are a senior Python backend engineer.
+
+Build a production-ready REST API backend for a Hotel Digital Menu / Restaurant Menu Display System.
+
+The system is NOT an online ordering system.
+
+The customer workflow is:
+
+1. Customer enters the hotel/restaurant.
+2. Customer scans a QR code placed on the table / room / location.
+3. QR code opens the digital menu website.
+4. Customer can browse menu categories and menu items.
+5. Customer can search menu items.
+6. Customer can see item images, descriptions, prices, ratings and availability.
+7. If an item becomes OUT OF STOCK, the admin can update it from the admin panel.
+8. The customer's menu screen should update the availability live without requiring a manual refresh.
+9. Customer can submit a review/rating.
+10. Customer can rate the serving/waiting staff member who served them.
+11. Admin can manage menu items, categories, banners, staff, QR locations, reviews and availability.
+
+There must be NO:
+- Shopping cart
+- Order creation
+- Checkout
+- Payment
+- Food ordering
+- Order tracking
+- Delivery
+- Inventory management
+- Billing
+
+This is strictly a digital menu + review + staff rating system.
+
+==================================================
+TECH STACK
+==================================================
+
+Backend:
+- Python 3.12+
+- FastAPI
+- SQLAlchemy 2.x
+- Pydantic v2
+- SQLite for initial development
+- Alembic for database migrations
+- JWT authentication
+- Passlib / bcrypt or Argon2 for password hashing
+- Uvicorn
+- python-multipart for file uploads
+
+Database:
+- SQLite initially
+- Structure the project so that PostgreSQL can be introduced later with minimal code changes.
+- Do NOT use SQLite-specific SQL wherever avoidable.
+- Use SQLAlchemy ORM.
+- Use environment variables for DATABASE_URL.
+
+Future database:
+PostgreSQL
+
+API documentation:
+- Swagger/OpenAPI through FastAPI
+- ReDoc
+
+==================================================
+PROJECT ARCHITECTURE
+==================================================
+
+Use a clean modular architecture.
+
+Recommended structure:
+
+app/
+    main.py
+
+    core/
+        config.py
+        security.py
+        database.py
+
+    models/
+        __init__.py
+        admin.py
+        category.py
+        menu_item.py
+        banner.py
+        staff.py
+        location.py
+        review.py
+        qr_code.py
+
+    schemas/
+        auth.py
+        admin.py
+        category.py
+        menu_item.py
+        banner.py
+        staff.py
+        location.py
+        review.py
+        qr_code.py
+
+    routers/
+        auth.py
+        categories.py
+        menu_items.py
+        banners.py
+        staff.py
+        locations.py
+        reviews.py
+        qr_codes.py
+        admin.py
+
+    services/
+        menu_service.py
+        review_service.py
+        staff_service.py
+        banner_service.py
+        qr_service.py
+        realtime_service.py
+        upload_service.py
+
+    repositories/
+        category_repository.py
+        menu_item_repository.py
+        review_repository.py
+        staff_repository.py
+
+    utils/
+        qr_generator.py
+        validators.py
+
+    uploads/
+        banners/
+        menu_items/
+        staff/
+
+    migrations/
+
+tests/
+
+requirements.txt
+.env.example
+README.md
+```
+
+Keep business logic outside the route handlers wherever practical.
+
+==================================================
+DATABASE MODELS
+==================================================
+
+Create the following database entities.
+
+--------------------------------------------------
+1. Admin
+--------------------------------------------------
+
+Fields:
+
+- id
+- name
+- email
+- password_hash
+- role
+- is_active
+- created_at
+- updated_at
+
+Roles:
+
+- super_admin
+- admin
+
+Admin authentication must use JWT.
+
+Admin passwords must NEVER be stored as plain text.
+
+--------------------------------------------------
+2. Category
+--------------------------------------------------
+
+Fields:
+
+- id
+- name
+- description
+- icon
+- image
+- display_order
+- is_active
+- created_at
+- updated_at
+
+Examples:
+
+- All Menu
+- Starters
+- Main Course
+- Beverages
+- Desserts
+- Offers
+
+Admin must be able to:
+
+- Create category
+- Edit category
+- Delete category
+- Activate/deactivate category
+- Reorder categories
+
+--------------------------------------------------
+3. Menu Item
+--------------------------------------------------
+
+Fields:
+
+- id
+- category_id
+- name
+- slug
+- short_description
+- description
+- price
+- image_url
+- rating
+- review_count
+- is_available
+- is_featured
+- is_popular
+- is_bestseller
+- display_order
+- preparation_time (optional)
+- tags
+- created_at
+- updated_at
+
+Availability states:
+
+- AVAILABLE
+- OUT_OF_STOCK
+
+The frontend must clearly display OUT OF STOCK.
+
+Important:
+
+Do not delete menu items when they temporarily become unavailable.
+
+Instead:
+
+is_available = false
+
+This allows the admin to make the item available again instantly.
+
+--------------------------------------------------
+4. Banner
+--------------------------------------------------
+
+Create a banner management system.
+
+Fields:
+
+- id
+- title
+- subtitle
+- description
+- image_url
+- button_text
+- button_link
+- display_order
+- is_active
+- start_date
+- end_date
+- created_at
+- updated_at
+
+The admin must be able to:
+
+- Upload banner image
+- Add title
+- Add subtitle
+- Add description
+- Configure button text
+- Configure button link
+- Activate/deactivate banner
+- Reorder banners
+- Edit banner
+- Delete banner
+
+The customer frontend should receive only active banners.
+
+The design should support banners similar to the provided reference UI.
+
+--------------------------------------------------
+5. Staff / Serving Person
+--------------------------------------------------
+
+Create a staff table.
+
+Fields:
+
+- id
+- name
+- employee_code
+- profile_image
+- designation
+- average_rating
+- total_ratings
+- is_active
+- created_at
+- updated_at
+
+Examples:
+
+- Waiter
+- Server
+- Restaurant Staff
+- Room Service Staff
+
+Admin can:
+
+- Add staff
+- Edit staff
+- Delete/deactivate staff
+- Upload staff image
+- View rating statistics
+
+--------------------------------------------------
+6. Location / Table
+--------------------------------------------------
+
+Create a location system because customers access the menu through QR codes.
+
+Fields:
+
+- id
+- name
+- location_type
+- table_number
+- room_number
+- qr_token
+- is_active
+- created_at
+- updated_at
+
+location_type examples:
+
+- TABLE
+- ROOM
+- RESTAURANT
+- OTHER
+
+Example:
+
+Table 01
+Table 02
+Table 03
+
+Each location should have a unique QR token.
+
+--------------------------------------------------
+7. QR Code
+--------------------------------------------------
+
+Create QR code management.
+
+Fields:
+
+- id
+- location_id
+- token
+- qr_image_url
+- is_active
+- created_at
+
+The QR code should point to the frontend menu URL.
+
+Example:
+
+https://frontend-domain.com/menu/{token}
+
+The backend should provide an endpoint to generate QR codes.
+
+Admin should be able to:
+
+- Create QR
+- Regenerate QR
+- Activate/deactivate QR
+- Download QR image
+- Associate QR with a table/location
+
+Do not put sensitive information inside the QR code.
+
+Use a random secure token.
+
+--------------------------------------------------
+8. Review
+--------------------------------------------------
+
+Customers must be able to submit reviews.
+
+The system should support menu item reviews and general restaurant/hotel reviews.
+
+Fields:
+
+- id
+- customer_name (optional)
+- customer_identifier
+- menu_item_id (nullable)
+- staff_id (nullable)
+- location_id (nullable)
+- rating
+- review_text
+- is_approved
+- is_visible
+- created_at
+- updated_at
+
+Rating:
+
+1 to 5 stars.
+
+Review types:
+
+- MENU_ITEM
+- STAFF
+- RESTAURANT
+
+Do not allow a rating below 1 or above 5.
+
+--------------------------------------------------
+9. Review Images (Optional)
+--------------------------------------------------
+
+Allow customers to optionally attach images to reviews.
+
+Fields:
+
+- id
+- review_id
+- image_url
+- created_at
+
+Limit:
+
+Maximum 3 images per review.
+
+Validate image type and file size.
+
+==================================================
+CUSTOMER API
+==================================================
+
+Customer APIs must NOT require login.
+
+The QR token identifies the menu location.
+
+--------------------------------------------------
+GET MENU
+--------------------------------------------------
+
+GET
+
+/api/v1/menu/{qr_token}
+
+Return:
+
+- Location information
+- Active categories
+- Active menu items
+- Active banners
+- Availability
+- Ratings
+- Featured items
+- Popular items
+
+Example response:
+
+{
+    "location": {
+        "id": 1,
+        "name": "Table 05",
+        "type": "TABLE"
+    },
+    "categories": [],
+    "banners": [],
+    "menu_items": []
+}
+
+--------------------------------------------------
+GET CATEGORIES
+--------------------------------------------------
+
+GET
+
+/api/v1/categories
+
+Return only active categories.
+
+--------------------------------------------------
+GET MENU ITEMS
+--------------------------------------------------
+
+GET
+
+/api/v1/menu-items
+
+Support:
+
+- category
+- search
+- featured
+- popular
+- bestseller
+- available
+- pagination
+- sorting
+
+Example:
+
+GET /api/v1/menu-items?category_id=2
+
+GET /api/v1/menu-items?search=pasta
+
+--------------------------------------------------
+GET MENU ITEM
+--------------------------------------------------
+
+GET
+
+/api/v1/menu-items/{id}
+
+Return:
+
+- Item information
+- Category
+- Availability
+- Rating
+- Review count
+- Reviews
+
+--------------------------------------------------
+GET BANNERS
+--------------------------------------------------
+
+GET
+
+/api/v1/banners
+
+Return active banners only.
+
+--------------------------------------------------
+GET STAFF
+--------------------------------------------------
+
+GET
+
+/api/v1/staff
+
+Return active serving staff.
+
+Do not expose sensitive staff information.
+
+Only return:
+
+- id
+- name
+- designation
+- profile image
+- rating
+
+--------------------------------------------------
+SUBMIT REVIEW
+--------------------------------------------------
+
+POST
+
+/api/v1/reviews
+
+Example:
+
+{
+    "customer_name": "John",
+    "menu_item_id": 10,
+    "staff_id": 4,
+    "location_id": 5,
+    "rating": 5,
+    "review_text": "Excellent food and great service"
+}
+
+Customer should be able to submit:
+
+1. Menu item rating
+2. Staff rating
+3. Restaurant/general rating
+
+Allow partial review types.
+
+For example:
+
+A customer may rate only the food.
+
+Or:
+
+A customer may rate only the serving person.
+
+Or:
+
+A customer may rate both.
+
+==================================================
+REVIEW SECURITY / ANTI-SPAM
+==================================================
+
+Since customers do not log in, implement basic anti-spam protection.
+
+Use a combination of:
+
+- IP-based rate limiting
+- Secure customer/session identifier
+- QR/location token
+- Request throttling
+- Review cooldown
+
+Do not rely only on customer_name.
+
+A customer should not be able to submit hundreds of reviews.
+
+Keep the system simple initially but design it so stronger authentication can be added later.
+
+==================================================
+ADMIN AUTHENTICATION
+==================================================
+
+Create:
+
+POST /api/v1/auth/login
+
+Request:
+
+{
+    "email": "admin@example.com",
+    "password": "password"
+}
+
+Response:
+
+{
+    "access_token": "...",
+    "token_type": "bearer",
+    "admin": {
+        "id": 1,
+        "name": "Admin",
+        "email": "admin@example.com",
+        "role": "admin"
+    }
+}
+
+Create protected admin routes.
+
+Use:
+
+Authorization: Bearer <JWT>
+
+==================================================
+ADMIN MENU MANAGEMENT
+==================================================
+
+Admin endpoints:
+
+POST   /api/v1/admin/menu-items
+GET    /api/v1/admin/menu-items
+GET    /api/v1/admin/menu-items/{id}
+PUT    /api/v1/admin/menu-items/{id}
+DELETE /api/v1/admin/menu-items/{id}
+
+Availability:
+
+PATCH /api/v1/admin/menu-items/{id}/availability
+
+Request:
+
+{
+    "is_available": false
+}
+
+This endpoint is extremely important.
+
+When admin marks an item OUT OF STOCK:
+
+- Database updates immediately
+- Customer frontend receives the new state
+- Item should display OUT OF STOCK
+- Item should not disappear unless configured
+- Customer should not need to refresh manually
+
+==================================================
+LIVE AVAILABILITY
+==================================================
+
+Implement real-time menu updates.
+
+Preferred technology:
+
+WebSocket
+
+Create:
+
+WS /api/v1/ws/menu/{qr_token}
+
+When admin changes:
+
+- menu availability
+- menu item
+- category
+- banner
+
+broadcast an event to connected customers.
+
+Example event:
+
+{
+    "event": "MENU_ITEM_UPDATED",
+    "data": {
+        "id": 25,
+        "is_available": false
+    }
+}
+
+Other events:
+
+MENU_ITEM_CREATED
+MENU_ITEM_UPDATED
+MENU_ITEM_DELETED
+MENU_ITEM_AVAILABILITY_CHANGED
+CATEGORY_UPDATED
+BANNER_UPDATED
+
+The architecture should allow the frontend to update only the affected UI instead of reloading the complete menu.
+
+Also provide a fallback polling mechanism/API because WebSocket may not always be available.
+
+For example:
+
+GET /api/v1/menu/{qr_token}/version
+
+Return:
+
+{
+    "version": 42
+}
+
+Every menu modification increments the menu version.
+
+==================================================
+ADMIN CATEGORY MANAGEMENT
+==================================================
+
+Endpoints:
+
+POST   /api/v1/admin/categories
+GET    /api/v1/admin/categories
+PUT    /api/v1/admin/categories/{id}
+DELETE /api/v1/admin/categories/{id}
+
+Also:
+
+PATCH /api/v1/admin/categories/{id}/status
+
+PATCH /api/v1/admin/categories/reorder
+
+==================================================
+ADMIN BANNER MANAGEMENT
+==================================================
+
+Endpoints:
+
+POST   /api/v1/admin/banners
+GET    /api/v1/admin/banners
+GET    /api/v1/admin/banners/{id}
+PUT    /api/v1/admin/banners/{id}
+DELETE /api/v1/admin/banners/{id}
+
+Upload:
+
+POST /api/v1/admin/banners/{id}/image
+
+Support:
+
+- JPG
+- JPEG
+- PNG
+- WEBP
+
+Validate:
+
+- MIME type
+- File size
+- File extension
+
+Do not trust only the file extension.
+
+==================================================
+FILE STORAGE
+==================================================
+
+For development:
+
+Store uploaded files locally.
+
+Example:
+
+uploads/
+    banners/
+    menu-items/
+    staff/
+
+Create an abstraction such as:
+
+UploadService
+
+so that later it can be replaced with:
+
+- Cloudinary
+- AWS S3
+- Cloudflare R2
+- Supabase Storage
+
+without changing the business logic.
+
+Return public image URLs from the API.
+
+==================================================
+ADMIN STAFF MANAGEMENT
+==================================================
+
+Endpoints:
+
+POST   /api/v1/admin/staff
+GET    /api/v1/admin/staff
+GET    /api/v1/admin/staff/{id}
+PUT    /api/v1/admin/staff/{id}
+DELETE /api/v1/admin/staff/{id}
+
+Also:
+
+GET /api/v1/admin/staff/{id}/ratings
+
+Return:
+
+- average rating
+- total ratings
+- rating distribution
+
+Example:
+
+{
+    "average_rating": 4.7,
+    "total_ratings": 124,
+    "distribution": {
+        "5": 90,
+        "4": 20,
+        "3": 8,
+        "2": 4,
+        "1": 2
+    }
+}
+
+==================================================
+ADMIN REVIEW MANAGEMENT
+==================================================
+
+Admin must be able to manage customer reviews.
+
+Endpoints:
+
+GET    /api/v1/admin/reviews
+GET    /api/v1/admin/reviews/{id}
+PATCH  /api/v1/admin/reviews/{id}/approve
+PATCH  /api/v1/admin/reviews/{id}/visibility
+DELETE /api/v1/admin/reviews/{id}
+
+Admin dashboard should be able to see:
+
+- Recent reviews
+- Average rating
+- Menu item ratings
+- Staff ratings
+- Restaurant rating
+- Pending reviews
+- Hidden reviews
+
+==================================================
+ADMIN DASHBOARD API
+==================================================
+
+Create:
+
+GET /api/v1/admin/dashboard
+
+Return useful statistics.
+
+Example:
+
+{
+    "total_menu_items": 120,
+    "available_items": 105,
+    "out_of_stock_items": 15,
+    "total_categories": 8,
+    "total_staff": 20,
+    "total_reviews": 540,
+    "average_restaurant_rating": 4.6,
+    "recent_reviews": [],
+    "popular_items": [],
+    "top_staff": []
+}
+
+==================================================
+QR MANAGEMENT
+==================================================
+
+Create admin endpoints:
+
+POST   /api/v1/admin/locations
+GET    /api/v1/admin/locations
+PUT    /api/v1/admin/locations/{id}
+DELETE /api/v1/admin/locations/{id}
+
+POST /api/v1/admin/locations/{id}/generate-qr
+
+GET /api/v1/admin/locations/{id}/qr
+
+Each QR must have a secure unique token.
+
+Example:
+
+https://menu.example.com/menu/a8f93kd82jd92
+
+The QR should never expose database IDs directly.
+
+==================================================
+SEARCH
+==================================================
+
+Customer menu search must support:
+
+- Item name
+- Description
+- Tags
+- Category
+
+Example:
+
+GET /api/v1/menu-items?search=chicken
+
+Search should be case-insensitive.
+
+==================================================
+FILTERS
+==================================================
+
+Support:
+
+- category
+- available
+- popular
+- bestseller
+- featured
+- price range
+
+==================================================
+SORTING
+==================================================
+
+Support:
+
+- display_order
+- price_low_to_high
+- price_high_to_low
+- rating
+- popularity
+
+==================================================
+SLUGS
+==================================================
+
+Menu items and categories should have SEO-friendly slugs.
+
+Example:
+
+creamy-alfredo-pasta
+
+grilled-ribeye-steak
+
+healthy-quinoa-bowl
+
+Make slugs unique.
+
+==================================================
+SOFT DELETE
+==================================================
+
+Prefer soft deletion for important records.
+
+Do not permanently delete menu items/reviews/staff unless explicitly required.
+
+For menu items:
+
+is_active = false
+
+For categories:
+
+is_active = false
+
+For staff:
+
+is_active = false
+
+==================================================
+VALIDATION
+==================================================
+
+Use Pydantic schemas.
+
+Validate:
+
+- Required fields
+- String lengths
+- Price >= 0
+- Rating between 1 and 5
+- Valid image types
+- File size
+- Unique email
+- Unique employee code
+- Unique slug
+- Unique QR token
+
+Return proper HTTP status codes.
+
+Examples:
+
+200 OK
+201 CREATED
+400 BAD REQUEST
+401 UNAUTHORIZED
+403 FORBIDDEN
+404 NOT FOUND
+409 CONFLICT
+422 VALIDATION ERROR
+500 INTERNAL SERVER ERROR
+
+==================================================
+ERROR HANDLING
+==================================================
+
+Create centralized exception handling.
+
+Use a consistent response format.
+
+Example:
+
+{
+    "success": false,
+    "message": "Menu item not found",
+    "error_code": "MENU_ITEM_NOT_FOUND"
+}
+
+Successful response:
+
+{
+    "success": true,
+    "message": "Menu item fetched successfully",
+    "data": {}
+}
+
+==================================================
+SECURITY
+==================================================
+
+Implement:
+
+- JWT authentication
+- Password hashing
+- CORS
+- Request validation
+- File validation
+- Rate limiting for public review APIs
+- Secure random QR tokens
+- No sensitive admin information in public APIs
+- SQL injection protection through SQLAlchemy ORM
+- Environment-based secrets
+- Proper authorization checks
+
+Never hardcode:
+
+- JWT secret
+- database credentials
+- admin passwords
+- API keys
+
+Use .env.
+
+Create:
+
+.env.example
+
+Example:
+
+DATABASE_URL=sqlite:///./hotel_menu.db
+JWT_SECRET_KEY=change-me
+JWT_ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=1440
+FRONTEND_URL=http://localhost:3000
+UPLOAD_DIR=uploads
+
+==================================================
+CORS
+==================================================
+
+Allow the Next.js frontend domain.
+
+Development:
+
+http://localhost:3000
+
+Make allowed origins configurable through environment variables.
+
+==================================================
+DATABASE MIGRATIONS
+==================================================
+
+Use Alembic.
+
+Create migrations for all tables.
+
+The project must support:
+
+alembic upgrade head
+
+and
+
+alembic downgrade -1
+
+Do not create database tables manually inside main.py in production mode.
+
+==================================================
+SEED DATA
+==================================================
+
+Create a seed script.
+
+Example:
+
+python seed.py
+
+Create:
+
+Admin:
+admin@example.com
+
+Categories:
+
+All Menu
+Starters
+Main Course
+Beverages
+Desserts
+Offers
+
+Example menu items:
+
+Creamy Alfredo Pasta
+Grilled Ribeye Steak
+Healthy Quinoa Bowl
+Chocolate Lava Cake
+Fresh Orange Juice
+
+Create several staff members.
+
+Create sample locations:
+
+Table 01
+Table 02
+Table 03
+
+Create sample banners.
+
+==================================================
+API VERSIONING
+==================================================
+
+All APIs must use:
+
+/api/v1/
+
+Example:
+
+/api/v1/menu-items
+
+==================================================
+API RESPONSE PAGINATION
+==================================================
+
+For admin lists and customer lists, support pagination.
+
+Example:
+
+GET /api/v1/admin/menu-items?page=1&limit=20
+
+Response:
+
+{
+    "success": true,
+    "data": [],
+    "pagination": {
+        "page": 1,
+        "limit": 20,
+        "total": 120,
+        "total_pages": 6
+    }
+}
+
+==================================================
+LOGGING
+==================================================
+
+Implement structured application logging.
+
+Log:
+
+- API requests
+- Errors
+- Admin actions
+- WebSocket connection/disconnection
+- Menu availability changes
+- Review submissions
+
+Do not log:
+
+- passwords
+- JWT tokens
+- sensitive customer information
+
+==================================================
+HEALTH CHECK
+==================================================
+
+Create:
+
+GET /health
+
+Response:
+
+{
+    "status": "healthy"
+}
+
+Also create:
+
+GET /api/v1/system/status
+
+to check:
+
+- API
+- Database
+- WebSocket
+
+==================================================
+OPENAPI DOCUMENTATION
+==================================================
+
+Every endpoint must have:
+
+- Summary
+- Description
+- Request schema
+- Response schema
+- Error responses
+- Authentication requirements
+
+Swagger must be accessible at:
+
+/docs
+
+ReDoc:
+
+/redoc
+
+==================================================
+TESTING
+==================================================
+
+Use pytest.
+
+Write tests for:
+
+- Admin login
+- JWT authentication
+- Category CRUD
+- Menu item CRUD
+- Availability update
+- Banner CRUD
+- Staff CRUD
+- QR generation
+- Customer menu retrieval
+- Review submission
+- Review validation
+- Rating calculation
+- WebSocket menu update
+- Unauthorized admin access
+- Rate limiting
+
+==================================================
+IMPORTANT BUSINESS RULES
+==================================================
+
+1. Customers NEVER create orders.
+
+2. Customers NEVER make payments.
+
+3. Customers NEVER access admin APIs.
+
+4. Menu items can be temporarily unavailable.
+
+5. OUT_OF_STOCK status must be immediately reflected on the customer frontend.
+
+6. Admin changes should trigger a real-time event through WebSocket.
+
+7. Reviews must be moderated by admin if moderation is enabled.
+
+8. Staff ratings should automatically update:
+   - average_rating
+   - total_ratings
+
+9. Menu item ratings should automatically update:
+   - average rating
+   - review count
+
+10. QR codes identify locations, not customers.
+
+11. QR tokens must be secure and non-guessable.
+
+12. Public menu APIs should expose only information required by the customer frontend.
+
+==================================================
+REAL-TIME EVENT ARCHITECTURE
+==================================================
+
+Create a reusable ConnectionManager.
+
+Example concept:
+
+ConnectionManager
+
+Methods:
+
+connect()
+disconnect()
+broadcast()
+broadcast_to_menu()
+
+When admin performs:
+
+PATCH /admin/menu-items/{id}/availability
+
+the service should:
+
+1. Update database.
+2. Commit transaction.
+3. Publish WebSocket event.
+4. Return API response.
+
+Example:
+
+{
+    "event": "MENU_ITEM_AVAILABILITY_CHANGED",
+    "data": {
+        "menu_item_id": 12,
+        "is_available": false
+    }
+}
+
+The frontend will then immediately change the item UI to:
+
+OUT OF STOCK
+
+without refreshing the page.
+
+==================================================
+DATABASE DESIGN PRINCIPLES
+==================================================
+
+Use proper foreign keys.
+
+Relationships:
+
+Category
+    |
+    └── MenuItem
+
+Location
+    |
+    └── QRCode
+
+MenuItem
+    |
+    └── Reviews
+
+Staff
+    |
+    └── Reviews
+
+Review
+    |
+    └── ReviewImages
+
+Use indexes for:
+
+- menu_item.slug
+- menu_item.category_id
+- menu_item.is_available
+- menu_item.is_active
+- review.menu_item_id
+- review.staff_id
+- review.location_id
+- qr_code.token
+
+==================================================
+FUTURE POSTGRESQL MIGRATION
+==================================================
+
+The application currently uses SQLite.
+
+However, design the database layer so that changing:
+
+DATABASE_URL
+
+from:
+
+sqlite:///./hotel_menu.db
+
+to:
+
+postgresql+psycopg://user:password@localhost/hotel_menu
+
+requires minimal/no application code changes.
+
+Do not use SQLite-specific features unless absolutely necessary.
+
+==================================================
+DOCKER
+==================================================
+
+Do NOT require Docker for the initial project.
+
+The project must run locally using:
+
+python -m venv venv
+
+pip install -r requirements.txt
+
+alembic upgrade head
+
+python seed.py
+
+uvicorn app.main:app --reload
+
+==================================================
+README
+==================================================
+
+Create a detailed README containing:
+
+1. Project overview
+2. Architecture
+3. Requirements
+4. Environment setup
+5. SQLite setup
+6. Database migration
+7. Seed data
+8. Running the server
+9. API documentation
+10. Admin authentication
+11. WebSocket usage
+12. Image upload
+13. QR code generation
+14. PostgreSQL migration instructions
+15. Production deployment instructions
+
+==================================================
+FINAL REQUIREMENT
+==================================================
+
+Build the backend as a clean, scalable foundation for a Next.js frontend and Next.js admin panel.
+
+The frontend will eventually contain a UI similar in concept to the provided restaurant menu reference:
+
+- Restaurant/hotel branding
+- Search
+- Category navigation
+- Promotional banners
+- Popular dishes
+- Menu item cards
+- Item images
+- Prices
+- Ratings
+- Availability status
+- Customer reviews
+- Staff/service rating
+
+The backend must provide all required APIs for this UI.
+
+Do not implement frontend code.
+
+Do not implement ordering.
+
+Do not implement payment.
+
+Do not implement cart functionality.
+
+Focus only on building the FastAPI backend, database, admin APIs, customer menu APIs, review system, staff rating system, QR/location system, image upload system, and real-time availability updates.
+
+Before writing code:
+
+1. Explain the proposed architecture.
+2. Show the database ER diagram in text.
+3. Show the API endpoint list.
+4. Explain the WebSocket event architecture.
+5. Then implement the project step by step.
+
+Generate production-quality, maintainable code rather than a single large FastAPI file.
+```
+
+### Recommended architecture
+
+Your overall system will look like this:
+
+```text
+                    ┌─────────────────────┐
+                    │   Customer Mobile   │
+                    │   Scan QR Code      │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │   Next.js Menu UI   │
+                    │                     │
+                    │ Search              │
+                    │ Categories          │
+                    │ Banners             │
+                    │ Menu Items          │
+                    │ Reviews             │
+                    │ Staff Rating        │
+                    └──────────┬──────────┘
+                               │
+                 REST API + WebSocket
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │      FastAPI        │
+                    │                     │
+                    │ Menu API            │
+                    │ Review API          │
+                    │ Staff API           │
+                    │ Banner API          │
+                    │ QR API              │
+                    │ Admin API           │
+                    │ WebSocket            │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │      SQLite         │
+                    │   SQLAlchemy ORM    │
+                    │                     │
+                    │ Later → PostgreSQL  │
+                    └─────────────────────┘
+```
+
+And the **live stock flow** should specifically be:
+
+```text
+ADMIN PANEL
+    │
+    │ "Mark Chicken Biriyani OUT OF STOCK"
+    ▼
+FastAPI
+    │
+    ├── Update SQLite
+    │
+    └── WebSocket Event
+              │
+              ▼
+       Connected Customers
+              │
+              ▼
+       UI instantly changes
+       "OUT OF STOCK"
+`
