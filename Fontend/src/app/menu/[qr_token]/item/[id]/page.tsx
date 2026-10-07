@@ -425,8 +425,10 @@ export default function ItemDetailPage() {
       <MoreDrawer
         isOpen={isMoreDrawerOpen}
         onClose={() => setIsMoreDrawerOpen(false)}
-        restaurantName={menuData?.location?.restaurant_name || "Grand Hotel & Dining"}
-        onOpenReviewModal={() => setIsRateModalOpen(true)}
+        restaurant={DEFAULT_RESTAURANT}
+        location={menuData?.location}
+        onOpenRateModal={() => setIsRateModalOpen(true)}
+        qrToken={qrToken}
       />
 
       {/* Review Modal pre-selected for this dish */}

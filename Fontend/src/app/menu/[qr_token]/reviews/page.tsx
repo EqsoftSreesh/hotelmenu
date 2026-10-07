@@ -22,6 +22,7 @@ import { reviewService } from "@/services/reviews";
 import { menuService } from "@/services/menu";
 import { formatDate } from "@/lib/utils";
 import { Review } from "@/types";
+import { DEFAULT_RESTAURANT } from "@/lib/constants";
 
 type ReviewTypeFilter = "ALL" | "MENU_ITEM" | "STAFF" | "RESTAURANT";
 
@@ -386,8 +387,10 @@ export default function ReviewsPage() {
       <MoreDrawer
         isOpen={isMoreDrawerOpen}
         onClose={() => setIsMoreDrawerOpen(false)}
-        restaurantName={restaurantName}
-        onOpenReviewModal={() => setIsRateModalOpen(true)}
+        restaurant={DEFAULT_RESTAURANT}
+        location={menuData?.location}
+        onOpenRateModal={() => setIsRateModalOpen(true)}
+        qrToken={qrToken}
       />
 
       {/* Interactive Rate Experience Modal */}
