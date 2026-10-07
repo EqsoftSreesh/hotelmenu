@@ -17,6 +17,15 @@ class LocationRepository(BaseRepository[Location]):
             .first()
         )
 
+    def get_default_location(self) -> Optional[Location]:
+        return (
+            self.db.query(Location)
+            .options(joinedload(Location.qr_codes))
+            .filter(Location.is_active == True)
+            .order_by(Location.id.asc())
+            .first()
+        )
+
     def get_with_qr(self, id: int) -> Optional[Location]:
         return (
             self.db.query(Location)

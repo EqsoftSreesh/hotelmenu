@@ -32,7 +32,7 @@ const NAV_ITEMS = [
   { label: "Banners", href: "/banners", icon: ImageIcon },
   { label: "Staff", href: "/staff", icon: Users },
   { label: "Reviews", href: "/reviews", icon: Star },
-  { label: "Locations & QR", href: "/locations", icon: QrCode },
+  { label: "Menu QR Code", href: "/locations", icon: QrCode },
   { label: "Settings", href: "/settings", icon: Settings },
 ];
 

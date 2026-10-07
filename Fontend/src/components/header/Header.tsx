@@ -53,17 +53,11 @@ export function Header({
               <span className="font-serif font-black text-xs text-gold-600 tracking-wider">✦</span>
             </div>
 
-            {/* Location Pill */}
-            {location ? (
-              <div className="inline-flex items-center gap-1 text-[11px] font-semibold text-brand-850 mt-1 bg-brand-50 px-2.5 py-0.5 rounded-full border border-brand-100">
-                <MapPin className="w-3 h-3 text-gold-600" />
-                <span>{location.name}</span>
-              </div>
-            ) : (
-              <span className="text-[10px] tracking-widest text-gold-600 font-semibold uppercase mt-0.5">
-                Digital Culinary Menu
-              </span>
-            )}
+            {/* Digital Menu Pill */}
+            <div className="inline-flex items-center gap-1 text-[11px] font-semibold text-brand-850 mt-1 bg-brand-50 px-2.5 py-0.5 rounded-full border border-brand-100">
+              <Sparkles className="w-3 h-3 text-gold-600" />
+              <span>Digital Culinary Menu</span>
+            </div>
           </Link>
         </div>
 

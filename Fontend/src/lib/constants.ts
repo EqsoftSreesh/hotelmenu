@@ -10,7 +10,7 @@ export const DEFAULT_RESTAURANT = {
   wifi_ssid: "GrandDining-Guest",
 };
 
-export const DEFAULT_FALLBACK_TOKEN = "kG4G42MjyA-zDoBE"; // From seeded location Table 01
+export const DEFAULT_FALLBACK_TOKEN = "main-menu"; // Single unified Restaurant Digital Menu QR Token
 
 export const NAV_LINKS = [
   { id: "home", label: "Home", href: "" },

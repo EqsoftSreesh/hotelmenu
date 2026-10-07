@@ -70,15 +70,13 @@ export function MoreDrawer({
             </button>
           </div>
 
-          {/* Location banner if scanned via QR */}
-          {location && (
-            <div className="px-6 py-3 bg-brand-50 border-b border-brand-100 flex items-center gap-2 text-xs text-brand-950">
-              <MapPin className="w-3.5 h-3.5 text-gold-600" />
-              <span>
-                Viewing menu for <strong>{location.name}</strong>
-              </span>
-            </div>
-          )}
+          {/* Digital Menu banner */}
+          <div className="px-6 py-3 bg-brand-50 border-b border-brand-100 flex items-center gap-2 text-xs text-brand-950">
+            <Sparkles className="w-3.5 h-3.5 text-gold-600" />
+            <span>
+              <strong>Digital Culinary Menu</strong>
+            </span>
+          </div>
 
           {/* Navigation Items */}
           <div className="p-4 space-y-1">
