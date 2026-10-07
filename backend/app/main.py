@@ -30,8 +30,19 @@ from app.routers.websocket import router as websocket_router
 from app.routers.health import router as health_router
 
 
+from app.core.database import Base, engine
+import app.models  # Register all models for metadata
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # Ensure database tables exist
+    try:
+        Base.metadata.create_all(bind=engine)
+        logger.info("Database tables initialized/verified.")
+    except Exception as e:
+        logger.error(f"Error ensuring database tables: {e}")
+
     # Ensure upload directories exist
     upload_folders = ["banners", "menu_items", "staff", "reviews", "qrcodes", "categories"]
     for folder in upload_folders:
@@ -39,6 +50,7 @@ async def lifespan(app: FastAPI):
     logger.info("Application starting up... Upload directories initialized.")
     yield
     logger.info("Application shutting down...")
+
 
 
 app = FastAPI(
