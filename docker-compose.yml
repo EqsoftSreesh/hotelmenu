@@ -42,7 +42,7 @@ services:
     volumes:
       - backend_uploads:/app/uploads
     ports:
-      - "8000:8000"
+      - "${BACKEND_PORT:-8000}:8000"
     depends_on:
       postgres:
         condition: service_healthy
@@ -59,7 +59,7 @@ services:
         - NEXT_PUBLIC_BACKEND_URL=${NEXT_PUBLIC_BACKEND_URL:-http://localhost:8000}
     restart: always
     ports:
-      - "3000:3000"
+      - "${FRONTEND_PORT:-3002}:3000"
     depends_on:
       - backend
     networks:
@@ -76,7 +76,7 @@ services:
         - NEXT_PUBLIC_CUSTOMER_MENU_URL=${NEXT_PUBLIC_CUSTOMER_MENU_URL:-http://localhost:3000}
     restart: always
     ports:
-      - "3001:3000"
+      - "${ADMIN_PORT:-3001}:3000"
     depends_on:
       - backend
     networks:
