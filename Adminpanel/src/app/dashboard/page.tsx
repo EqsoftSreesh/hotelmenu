@@ -84,7 +84,7 @@ export default function DashboardPage() {
               className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-stone-200 hover:border-brand-900 text-stone-700 hover:text-brand-950 font-semibold text-sm shadow-sm transition-all"
             >
               <QrCode className="w-4 h-4 text-brand-700" />
-              <span>QR Tables</span>
+              <span>Menu QR Code</span>
             </Link>
           </div>
         </div>

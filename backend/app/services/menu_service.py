@@ -189,8 +189,11 @@ class MenuService:
     def get_customer_menu(self, qr_token: str) -> CustomerMenuResponse:
         location = self.location_repo.get_by_qr_token(qr_token)
         if not location:
+            location = self.location_repo.get_default_location()
+
+        if not location:
             raise NotFoundError(
-                "Invalid QR code or location is currently inactive",
+                "Menu is currently unavailable",
                 error_code="LOCATION_NOT_FOUND",
             )
 
