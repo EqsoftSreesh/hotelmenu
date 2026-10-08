@@ -253,3 +253,8 @@ docker exec -t $(docker ps -qf "name=postgres") pg_dump -U hotel_user hotel_menu
 
 ### 5. Redeploying New Code Updates
 Whenever you push changes to your GitHub `main` branch, simply open Dokploy and click **Deploy** (or enable Dokploy's **Auto Deploy / Webhook** for automatic deployment on git push).
+
+### 6. Error: 'Bind for 0.0.0.0:3000 failed: port is already allocated'
+Dokploy's own web panel runs on host port **3000** (`http://YOUR_VPS_IP:3000`). If `docker-compose.yml` attempts to bind the frontend container to host port 3000 (`3000:3000`), Docker fails because port 3000 is already taken.
+- We have set the default host port to `3002:3000` in [`docker-compose.yml`](docker-compose.yml) (`${FRONTEND_PORT:-3002}:3000`).
+- When configuring Dokploy's **Domains** tab, the **Container Port** for `frontend` and `adminpanel` remains **`3000`**, because Traefik communicates with the container's internal network port.
