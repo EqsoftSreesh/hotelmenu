@@ -18,6 +18,7 @@ class Settings(BaseSettings):
     POSTGRES_HOST: Optional[str] = None
     POSTGRES_PORT: int = 5432
     POSTGRES_DB: Optional[str] = None
+    AUTO_SEED: bool = True
 
     def model_post_init(self, __context):
         if self.POSTGRES_USER and self.POSTGRES_PASSWORD and self.POSTGRES_DB:

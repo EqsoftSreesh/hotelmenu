@@ -40,6 +40,15 @@ async def lifespan(app: FastAPI):
     try:
         Base.metadata.create_all(bind=engine)
         logger.info("Database tables initialized/verified.")
+
+        # Run auto-seed if enabled
+        if settings.AUTO_SEED:
+            try:
+                from seed import seed_database
+                seed_database()
+                logger.info("Database auto-seeded successfully on startup.")
+            except Exception as se:
+                logger.error(f"Error during startup database auto-seed: {se}")
     except Exception as e:
         logger.error(f"Error ensuring database tables: {e}")
 
