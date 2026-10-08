@@ -5,7 +5,8 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from sqlalchemy.orm import Session
-from app.core.database import SessionLocal, engine
+from app.core.database import SessionLocal, engine, Base
+import app.models  # Register all models for metadata
 from app.core.security import hash_password
 from app.core.config import settings
 from app.models.admin import Admin
@@ -21,6 +22,8 @@ from app.utils.qr_generator import create_qr_code_image
 
 
 def seed_database():
+    # Ensure all tables exist before querying or inserting
+    Base.metadata.create_all(bind=engine)
     db: Session = SessionLocal()
     try:
         print("Starting unified database seeding...")
@@ -54,7 +57,10 @@ def seed_database():
                 db.commit()
                 print(f"  Created Admin: {adm_email} / {adm_pass}")
             else:
-                print(f"  Admin {adm_email} already exists.")
+                existing_adm.password_hash = hash_password(adm_pass)
+                existing_adm.is_active = True
+                db.commit()
+                print(f"  Admin {adm_email} already exists - password refreshed.")
 
         # 2. Categories with rich images
         categories_data = [
